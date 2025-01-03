@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register - Movie Reviews{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .btn {
+            text-align: center !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="auth-card card">
+        <div class="card-body">
+            <h1 class="h3 mb-3">Register</h1>
+
+            {{ form_errors(registrationForm) }}
+
+            {{ form(registrationForm) }}
+        </div>
+    </div>
+{% endblock %}

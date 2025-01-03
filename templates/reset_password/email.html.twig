@@ -1,0 +1,13 @@
+<h1>Movie Reviews</h1>
+
+<strong>Object: Reset password</strong>
+
+<p>To reset your password, please visit the following link</p>
+
+<a href="{{ url('reset_password.reset_password', {token: resetToken.token}) }}">{{ url('reset_password.reset_password', {token: resetToken.token}) }}</a>
+
+<p>This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+<p>
+    See you on Movie Reviews!
+</p>
