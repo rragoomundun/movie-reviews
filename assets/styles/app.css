@@ -136,20 +136,20 @@ input:focus {
 
 /* Authentication */
 
-.auth-card {
+.card-md {
   max-width: 500px;
   margin: auto;
 }
 
-.auth-card h1 {
+.card-md h1 {
   text-align: center;
 }
 
-.auth-card .btn {
+.card-md .btn {
   text-align: center;
 }
 
-.auth-card .mb-3:last-of-type {
+.card-md .mb-3:last-of-type {
   text-align: center;
 }
 
