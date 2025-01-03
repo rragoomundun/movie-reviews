@@ -7,11 +7,15 @@ body {
 
 main {
   flex-grow: 1;
-  margin-top: 56px;
+  margin-top: 110px;
 }
 
 .container {
   max-width: 1024px !important;
+}
+
+.brand-font {
+  font-family: Anton;
 }
 
 /* Header */
@@ -30,7 +34,6 @@ header {
 }
 
 #search input:focus {
-  box-shadow: none;
   border: 1px solid var(--bs-border-color);
   border-right: none;
 }
@@ -122,3 +125,40 @@ footer a:hover {
 }
 
 /* End Footer */
+
+/* Inputs */
+
+input:focus {
+  box-shadow: none !important;
+}
+
+/* End Inputs */
+
+/* Authentication */
+
+.auth-card {
+  max-width: 500px;
+  margin: auto;
+}
+
+.auth-card h1 {
+  text-align: center;
+}
+
+.auth-card .btn {
+  text-align: center;
+}
+
+.auth-card .mb-3:last-of-type {
+  text-align: center;
+}
+
+/* End Authentication */
+
+/* Alerts */
+
+.alert {
+  border: none !important;
+}
+
+/* End Alerts */

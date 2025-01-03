@@ -1,15 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register - Movie Reviews{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .btn {
+            text-align: center !important;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+    <div class="auth-card card">
+        <div class="card-body">
+            <h1 class="h3 mb-3">Register</h1>
 
-    <h1>Register</h1>
+            {{ form_errors(registrationForm) }}
 
-    {{ form_errors(registrationForm) }}
-
-    {{ form(registrationForm) }}
+            {{ form(registrationForm) }}
+        </div>
+    </div>
 {% endblock %}
