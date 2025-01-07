@@ -8,6 +8,7 @@ body {
 main {
   flex-grow: 1;
   margin-top: 110px;
+  margin-bottom: 64px;
 }
 
 .container {
@@ -24,6 +25,7 @@ header {
   position: fixed;
   width: 100%;
   top: 0;
+  z-index: 1000;
   box-shadow: 0 0 5px #999;
 }
 
