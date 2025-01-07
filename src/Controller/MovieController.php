@@ -29,6 +29,9 @@ class MovieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $movie->setProprietary($this->getUser());
+
+            dd($movie);
         }
 
         return $this->render('movie/add.html.twig', [

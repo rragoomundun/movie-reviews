@@ -32,8 +32,7 @@ class MovieFormType extends AbstractType
             ->add('title')
             ->add('coverImage', FileType::class)
             ->add('releaseDate', null, [
-                'widget' => 'single_text',
-                'required' => false
+                'widget' => 'single_text'
             ])
             ->add('duration')
             ->add('synopsis')
@@ -45,10 +44,7 @@ class MovieFormType extends AbstractType
                         ->createQueryBuilder('g');
                 }
             ])
-            ->add('director', EntityType::class, [
-                'class' => Person::class,
-                'choice_label' => 'id',
-            ])
+            ->add('director', PersonAutocompleteField::class)
             ->add('add', SubmitType::class, [
                 'label' => 'Add Movie'
             ])
