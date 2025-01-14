@@ -39,12 +39,25 @@ class MovieFormType extends AbstractType
             ->add('genre', EntityType::class, [
                 'class' => MovieGenre::class,
                 'choice_label' => 'label',
+                'placeholder' => 'Chooser a genre',
                 'query_builder' => function (MovieGenreRepository $movieGenreRepository) {
                     return $movieGenreRepository
                         ->createQueryBuilder('g');
                 }
             ])
             ->add('director', PersonAutocompleteField::class)
+            ->add('actor1', PersonAutocompleteField::class, [
+                'label' => 'Actor 1',
+                'mapped' => false
+            ])
+            ->add('actor2', PersonAutocompleteField::class, [
+                'label' => 'Actor 2',
+                'mapped' => false
+            ])
+            ->add('actor3', PersonAutocompleteField::class, [
+                'label' => 'Actor 3',
+                'mapped' => false
+            ])
             ->add('add', SubmitType::class, [
                 'label' => 'Add Movie'
             ])

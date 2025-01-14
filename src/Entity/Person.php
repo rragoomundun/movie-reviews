@@ -46,9 +46,16 @@ class Person
     #[ORM\OneToMany(targetEntity: Movie::class, mappedBy: 'director')]
     private Collection $movies;
 
+    /**
+     * @var Collection<int, MovieActors>
+     */
+    #[ORM\OneToMany(targetEntity: MovieActors::class, mappedBy: 'person')]
+    private Collection $movieActors;
+
     public function __construct()
     {
         $this->movies = new ArrayCollection();
+        $this->movieActors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -153,6 +160,36 @@ class Person
             // set the owning side to null (unless already changed)
             if ($movie->getDirector() === $this) {
                 $movie->setDirector(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovieActors>
+     */
+    public function getMovieActors(): Collection
+    {
+        return $this->movieActors;
+    }
+
+    public function addMovieActor(MovieActors $movieActor): static
+    {
+        if (!$this->movieActors->contains($movieActor)) {
+            $this->movieActors->add($movieActor);
+            $movieActor->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovieActor(MovieActors $movieActor): static
+    {
+        if ($this->movieActors->removeElement($movieActor)) {
+            // set the owning side to null (unless already changed)
+            if ($movieActor->getPerson() === $this) {
+                $movieActor->setPerson(null);
             }
         }
 

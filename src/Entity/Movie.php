@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MovieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -60,6 +62,17 @@ class Movie
     #[ORM\ManyToOne(inversedBy: 'movies')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Person $director = null;
+
+    /**
+     * @var Collection<int, MovieActors>
+     */
+    #[ORM\OneToMany(targetEntity: MovieActors::class, mappedBy: 'movie')]
+    private Collection $movieActors;
+
+    public function __construct()
+    {
+        $this->movieActors = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -195,6 +208,36 @@ class Movie
     public function setDirector(?Person $director): static
     {
         $this->director = $director;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovieActors>
+     */
+    public function getMovieActors(): Collection
+    {
+        return $this->movieActors;
+    }
+
+    public function addMovieActor(MovieActors $movieActor): static
+    {
+        if (!$this->movieActors->contains($movieActor)) {
+            $this->movieActors->add($movieActor);
+            $movieActor->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovieActor(MovieActors $movieActor): static
+    {
+        if ($this->movieActors->removeElement($movieActor)) {
+            // set the owning side to null (unless already changed)
+            if ($movieActor->getMovie() === $this) {
+                $movieActor->setMovie(null);
+            }
+        }
 
         return $this;
     }

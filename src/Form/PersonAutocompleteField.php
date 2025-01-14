@@ -15,7 +15,7 @@ class PersonAutocompleteField extends AbstractType
     {
         $resolver->setDefaults([
             'class' => Person::class,
-            'placeholder' => 'Choose a Person',
+            'placeholder' => 'Choose a person',
             'choice_label' => function ($person) {
                 return $person->getFirstName() . ' ' . $person->getLastName();
             },
