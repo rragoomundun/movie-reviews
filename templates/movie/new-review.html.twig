@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ title }} - New Review - Movie Reviews{% endblock %}
+
+{% block body %}
+  <style>
+    .card-md .mb-3:last-of-type {
+      text-align: right !important;
+    }
+  </style>
+
+  {% include 'movie/partials/header.html.twig' %}
+
+  <p class="text-center">Write Review</p>
+
+  <hr>
+
+  <div class="card-md">
+    {% if hasReview == false %}
+      {{ form_start(reviewForm) }}
+
+      {{ form_row(reviewForm.mark) }}
+      {{ form_row(reviewForm.note) }}
+
+      <div class="row">
+        <div class="col">
+          <a href="{{ path('movie.reviews', { slug: slug, id: id }) }}" class="btn btn-link">
+            <span class="fa-regular fa-circle-left"></span>
+            Back to reviews
+          </a>
+        </div>
+        <div class="col">
+            {{ form_row(reviewForm.submit) }}
+        </div>
+      </div>
+
+      {{ form_end(reviewForm) }}
+    {% else %}
+      <p>You already wrote a review for this movie. You cannot write another one.</p>
+
+      <div class="text-center">
+        <a href="{{ path('movie.reviews', { slug: slug, id: id }) }}" class="btn btn-link">
+          <span class="fa-regular fa-circle-left"></span>
+          Back to reviews
+        </a>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

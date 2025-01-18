@@ -130,13 +130,14 @@ footer a:hover {
 
 /* Inputs */
 
-input:focus {
+input:focus,
+textarea:focus {
   box-shadow: none !important;
 }
 
 /* End Inputs */
 
-/* Authentication */
+/* Cards */
 
 .card-md {
   max-width: 500px;
@@ -155,7 +156,15 @@ input:focus {
   text-align: center;
 }
 
-/* End Authentication */
+/* End Cards */
+
+/* Buttons */
+
+.btn-link {
+  text-decoration: none !important;
+}
+
+/* End Buttons */
 
 /* Alerts */
 
@@ -164,3 +173,15 @@ input:focus {
 }
 
 /* End Alerts */
+
+/* Pagination */
+
+#pagination {
+  text-align: center;
+}
+
+#pagination > nav {
+  display: inline-block;
+}
+
+/* End pagination */

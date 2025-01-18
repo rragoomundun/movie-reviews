@@ -69,9 +69,16 @@ class Movie
     #[ORM\OneToMany(targetEntity: MovieActors::class, mappedBy: 'movie')]
     private Collection $movieActors;
 
+    /**
+     * @var Collection<int, Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'movie')]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->movieActors = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -236,6 +243,36 @@ class Movie
             // set the owning side to null (unless already changed)
             if ($movieActor->getMovie() === $this) {
                 $movieActor->setMovie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getMovie() === $this) {
+                $review->setMovie(null);
             }
         }
 
