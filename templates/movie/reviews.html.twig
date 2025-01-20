@@ -3,6 +3,12 @@
 {% block title %} {{ title }} - Reviews - Movie Reviews{% endblock %}
 
 {% block body %}
+  <style>
+    #no-review {
+      text-align: center;
+    }
+  </style>
+
   {% include 'movie/partials/header.html.twig' %}
 
   {% if is_granted('ROLE_USER') and hasReview == false %}
@@ -24,6 +30,10 @@
 
       {% include 'movie/review.html.twig' %}
     {% endfor %}
+
+    {% if reviews is empty %}
+      <p id="no-review">There are no reviews for this movie.</p>
+    {% endif %}
   </div>
 
   <br>

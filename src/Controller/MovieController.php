@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 class MovieController extends AbstractController
 {
@@ -72,7 +73,7 @@ class MovieController extends AbstractController
     {
         $movie = $this->movieRepository->find($id);
         $page = $request->query->getInt('page', 1);
-        $reviews = $this->reviewRepository->findPaginatedReviews($page);
+        $reviews = $this->reviewRepository->findPaginatedReviews($page, $movie);
 
         return $this->render('movie/reviews.html.twig', [
             'id' => $id,
@@ -154,7 +155,13 @@ class MovieController extends AbstractController
 
             $entityManager->flush();
 
-            // TODO: add redirection to the newly created movie
+            $slugger = new AsciiSlugger();
+            $slug = strtolower($slugger->slug($movie->getTitle())->toString());
+
+            return $this->redirectToRoute('movie.page', [
+                'slug' => $slug,
+                'id' => $movie->getId()
+            ]);
         }
 
         return $this->render('movie/add.html.twig', [

@@ -41,10 +41,12 @@ class ReviewRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findPaginatedReviews(int $page)
+    public function findPaginatedReviews(int $page, Movie $movie)
     {
         return $this->paginator->paginate(
-            $this->createQueryBuilder('r'),
+            $this->createQueryBuilder('r')
+                ->andWhere('r.movie = :movie')
+                ->setParameter('movie', $movie),
             $page,
             10
         );
