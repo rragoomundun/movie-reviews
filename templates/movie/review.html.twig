@@ -1,31 +1,48 @@
 <style>
-  .review {
+  .review .card-body > div {
     display: flex;
+    align-items: center;
+    overflow-x: auto;
   }
 
-  .review div:first-of-type {
-    text-align: center;
-    min-width: 80px;
-    max-width: 80px;
-    margin-right: 1rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .review .card-body > div div:not(:nth-child(4)) {
+    margin-right: 0.5rem;
+  }
+
+  .review .card-body > div div:nth-child(4) {
+    display: flex;
   }
 </style>
 
-<div class="review">
-  <div>
-    <span class="fa-solid fa-circle-user fa-3x"></span>
+<div class="review card">
+  <div class="card-body">
+    <div>
+      <div>
+        <span class="fa-solid fa-circle-user fa-2x"></span>      
+      </div>
+      <div>
+        <span>{{ review.proprietary.name }}</span>
+      </div>
+      <div>
+        <span>|</span>
+      </div>
+      <div>
+        {% for i in 1..review.mark %}
+          <span class="fa-solid fa-star text-warning"></span>
+        {% endfor %}
 
-    <br>
-
-    <span>{{ review.proprietary.name }}</span>
+        {% if review.mark < 5 %}
+          {% for i in 1..(5 - review.mark) %}
+            <span class="fa-solid fa-star text-secondary"></span>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
 
     <hr>
-
-    <span class="fs-4">{{ review.mark }} / 5</span>
-  </div>
-  <div>
-    <p>{{ review.note }}</p>
+    
+    <div>
+      <p>{{ review.note }}</p>
+    </div>
   </div>
 </div>

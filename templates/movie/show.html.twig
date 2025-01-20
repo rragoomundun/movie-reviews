@@ -60,11 +60,10 @@
 
     <div id="movie-reviews">
       {% for review in reviews %}
-        <hr>
         {% include 'movie/review.html.twig' %}
-      {% endfor %}
 
-      <br>
+        <br>
+      {% endfor %}
 
       <div class="text-end">
         <a href="{{ path('movie.reviews', { slug: slug, id: id }) }}" class="btn btn-link">

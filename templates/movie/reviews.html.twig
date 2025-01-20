@@ -24,11 +24,9 @@
 
   <div id="movie-reviews">
     {% for review in reviews %}
-      {% if loop.index > 1 %}
-        <hr>
-      {% endif %}
-
       {% include 'movie/review.html.twig' %}
+
+      <br>
     {% endfor %}
 
     {% if reviews is empty %}
