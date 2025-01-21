@@ -35,7 +35,11 @@
 
   <span>&nbsp;/&nbsp;</span>
 
-  <a href="#">Photos</a>
+  {% if section == 'photos' %}
+    <span class="fw-bold">Photos</span>
+  {% else %}
+    <a href="{{ path('movie.photos', { slug: slug, id: id }) }}">Photos</a>
+  {% endif %}
 
   <span>&nbsp;/&nbsp;</span>
 

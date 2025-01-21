@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Entity\MovieActors;
+use App\Entity\Photo;
 use App\Entity\Review;
 use App\Form\MovieFormType;
+use App\Form\PhotoFormType;
 use App\Form\ReviewFormType;
 use App\Repository\MovieActorsRepository;
 use App\Repository\MovieRepository;
+use App\Repository\PhotoRepository;
 use App\Repository\ReviewRepository;
 use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,16 +28,19 @@ class MovieController extends AbstractController
     private readonly MovieRepository $movieRepository;
     private readonly MovieActorsRepository $movieActorsRepository;
     private readonly ReviewRepository $reviewRepository;
+    private readonly PhotoRepository $photoRepository;
 
     public function __construct(
         MovieRepository $movieRepository,
         MovieActorsRepository $movieActorsRepository,
         ReviewRepository $reviewRepository,
-        S3Uploader $s3Uploader
+        S3Uploader $s3Uploader,
+        PhotoRepository $photoRepository
     ) {
         $this->movieRepository = $movieRepository;
         $this->movieActorsRepository = $movieActorsRepository;
         $this->reviewRepository = $reviewRepository;
+        $this->photoRepository = $photoRepository;
 
         $this->s3Uploader = $s3Uploader;
     }
@@ -117,6 +123,73 @@ class MovieController extends AbstractController
             'hasReview' => $this->reviewRepository->hasMovieHasReviewFromUser($movie, $this->getUser())
         ]);
     }
+
+    #[Route('/movie/{slug}-{id}/photos', name: 'movie.photos', requirements: ['slug' => '[a-z0-9-]+', 'id' => '\d+'])]
+    public function showPhotos(Request $request, string $slug, int $id): Response
+    {
+        $file = $request->query->get('file');
+        $movie = $this->movieRepository->find($id);
+
+        if ($file !== null && $this->photoRepository->exists($file, $movie) === false) {
+            $file = null;
+        }
+
+        return $this->render('movie/photos.html.twig', [
+            'id' => $id,
+            'slug' => $slug,
+            'section' => 'photos',
+            'title' => $movie->getTitle(),
+            'file' => $file,
+            'isUserProprietary' => ($this->getUser() ? $this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) : false)
+        ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/movie/{slug}-{id}/photos/upload', name: 'movie.photos.upload', requirements: ['slug' => '[a-z0-9-]+', 'id' => '\d+'])]
+    public function uploadPhotos(Request $request, EntityManagerInterface $entityManager, string $slug, int $id): Response
+    {
+        if ($this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) === false) {
+            return $this->redirectToRoute('movie.photos', [
+                'id' => $id,
+                'slug' => $slug
+            ]);
+        }
+
+        $movie = $this->movieRepository->find($id);
+        $form = $this->createForm(PhotoFormType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $files = $request->files->get('photo_form')['photos'];
+
+            foreach ($files as $file) {
+                $url = $this->s3Uploader->upload($file);
+                $photo = new Photo();
+
+                $photo->setUrl($url);
+                $photo->setMovie($movie);
+
+                $entityManager->persist($photo);
+            }
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('movie.photos', [
+                'id' => $id,
+                'slug' => $slug
+            ]);
+        }
+
+        return $this->render('movie/photos-upload.html.twig', [
+            'id' => $id,
+            'slug' => $slug,
+            'section' => 'photos',
+            'title' => $movie->getTitle(),
+            'photoForm' => $form
+        ]);
+    }
+
 
     #[Route('/movie/add', name: 'movie.add', methods: ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $entityManager): Response

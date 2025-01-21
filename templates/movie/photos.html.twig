@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ title }} - Photos - Movie Reviews{% endblock %}
+
+{% block body %}
+  {% include 'movie/partials/header.html.twig' %}
+
+    {% if is_granted('ROLE_USER') and isUserProprietary == true %}
+    <div class="text-center">
+      <a href="{{ path('movie.photos.upload', { slug: slug, id: id }) }}" class="btn btn-primary">
+        <span class="fa-solid fa-upload"></span>
+        Upload Photos
+      </a>
+    </div>
+
+    <hr>
+  {% endif %}
+{% endblock %}
