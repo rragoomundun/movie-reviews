@@ -18,6 +18,10 @@
     #movie-details ul li:nth-child(6) {
       margin-top: 1rem;
     }
+
+    #movie-photos #photos div img {
+      width: 100%
+    }
   </style>
 {% endblock %}
 
@@ -54,6 +58,38 @@
       </ul>
     </div>
   </div>
+
+  {% if photos %}
+    <h2 class="mt-3">Photos</h2>
+
+    <div id="movie-photos">
+      <div id="photos" class="row">
+        {% set classes = [
+            'col-12 col-sm-4 col-md-3',
+            'col-12 col-sm-4 col-md-3 mt-3 mt-sm-0',
+            'col-12 col-sm-4 col-md-3 mt-3 mt-sm-0',
+            'col-12 col-sm-12 col-md-3 mt-3 mt-md-0'
+          ]
+        %}
+
+        {% for photo in photos %}
+          <div class="{{ classes[loop.index0] }}">
+            <a href="{{ path('movie.photos', { slug: slug, id:id }) }}?file={{ photo.url }}">
+              <img src="{{ photo.url }}" alt="{{ title }} photo {{ loop.index }}" class="rounded">
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+
+      <br>
+
+      <div class="text-end">
+        <a href="{{ path('movie.photos', { slug: slug, id: id }) }}" class="btn btn-link">
+          All Photos
+        </a>
+      </div>
+    </div>
+  {% endif %}
 
   {% if reviews %}
     <h2 class="mt-3">Reviews</h2>

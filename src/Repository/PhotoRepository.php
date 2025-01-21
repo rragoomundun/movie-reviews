@@ -36,4 +36,14 @@ class PhotoRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findFirstFourPhotosOfMovie(Movie $movie): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.movie = :movie')
+            ->setParameter('movie', $movie)
+            ->setMaxResults(4)
+            ->getQuery()
+            ->getResult();
+    }
 }

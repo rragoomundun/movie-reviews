@@ -56,6 +56,7 @@ class MovieController extends AbstractController
 
             return $person->getFirstName() . ' ' . $person->getLastName();
         }, $movieActors);
+        $photos = $this->photoRepository->findFirstFourPhotosOfMovie($movie);
         $reviews = $this->reviewRepository->findLastFiveReviews($movie);
 
         return $this->render('movie/show.html.twig', [
@@ -70,6 +71,7 @@ class MovieController extends AbstractController
             'genre' => $movie->getGenre()->getLabel(),
             'director' => $director->getFirstName() . ' ' . $director->getLastName(),
             'actors' => $actors,
+            'photos' => $photos,
             'reviews' => $reviews
         ]);
     }
