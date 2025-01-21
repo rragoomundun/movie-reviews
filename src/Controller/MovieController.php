@@ -129,18 +129,52 @@ class MovieController extends AbstractController
     {
         $file = $request->query->get('file');
         $movie = $this->movieRepository->find($id);
+        $photos = $this->photoRepository->findPhotosForMovie($movie);
 
         if ($file !== null && $this->photoRepository->exists($file, $movie) === false) {
             $file = null;
         }
+
+        if ($file === null && empty($photos) === false) {
+            return $this->redirectToRoute('movie.photos', [
+                'id' => $id,
+                'slug' => $slug,
+                'file' => $photos[0]->getUrl()
+            ]);
+        }
+
+        $nbPhotos = count($photos);
+        $currentPhotoIndex = 0;
+        $previousFile = null;
+        $nextFile = null;
+
+        for ($currentPhotoIndex = 0; $currentPhotoIndex < $nbPhotos; $currentPhotoIndex++) {
+            if ($photos[$currentPhotoIndex]->getUrl() === $file) {
+                break;
+            }
+        }
+
+        if ($currentPhotoIndex > 0) {
+            $previousFile = $photos[$currentPhotoIndex - 1]->getUrl();
+        }
+
+        if ($currentPhotoIndex + 1 < $nbPhotos) {
+            $nextFile = $photos[$currentPhotoIndex + 1]->getUrl();
+        }
+
+        $currentPhotoIndex += 1;
 
         return $this->render('movie/photos.html.twig', [
             'id' => $id,
             'slug' => $slug,
             'section' => 'photos',
             'title' => $movie->getTitle(),
+            'isUserProprietary' => ($this->getUser() ? $this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) : false),
             'file' => $file,
-            'isUserProprietary' => ($this->getUser() ? $this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) : false)
+            'previousFile' => $previousFile,
+            'nextFile' => $nextFile,
+            'currentPhotoIndex' => $currentPhotoIndex,
+            'nbPhotos' => $nbPhotos
         ]);
     }
 

@@ -25,6 +25,15 @@ class PhotoRepository extends ServiceEntityRepository
             ->setParameter('file', $file)
             ->setParameter('movie', $movie)
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getResult();
+    }
+
+    public function findPhotosForMovie(Movie $movie): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.movie = :movie')
+            ->setParameter('movie', $movie)
+            ->getQuery()
+            ->getResult();
     }
 }
