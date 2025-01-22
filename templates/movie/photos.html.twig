@@ -26,31 +26,35 @@
     <hr>
   {% endif %}
 
-  <div class="row">
-    <div class="col">
-      {% if previousFile %}
-        <a href="{{ path('movie.photos', { slug: slug, id: id, file: previousFile }) }}" class="btn btn-primary">
-          <span class="fa-solid fa-arrow-left"></span>
-          <span>Previous</span>
-        </a>
-      {% endif %}
+  {% if nbPhotos > 0 %}
+    <div class="row">
+      <div class="col">
+        {% if previousFile %}
+          <a href="{{ path('movie.photos', { slug: slug, id: id, file: previousFile }) }}" class="btn btn-primary">
+            <span class="fa-solid fa-arrow-left"></span>
+            <span>Previous</span>
+          </a>
+        {% endif %}
+      </div>
+      <div class="col text-center">
+        <span>{{ currentPhotoIndex }} / {{ nbPhotos }}</span>
+      </div>
+      <div class="col text-end">
+        {% if nextFile %}
+          <a href="{{ path('movie.photos', { slug: slug, id: id }) }}?file={{ nextFile }}" class="btn btn-primary">
+            <span>Next</span>
+            <span class="fa-solid fa-arrow-right"></span>
+          </a>
+        {% endif %}
+      </div>
     </div>
-    <div class="col text-center">
-      <span>{{ currentPhotoIndex }} / {{ nbPhotos }}</span>
-    </div>
-    <div class="col text-end">
-      {% if nextFile %}
-        <a href="{{ path('movie.photos', { slug: slug, id: id }) }}?file={{ nextFile }}" class="btn btn-primary">
-          <span>Next</span>
-          <span class="fa-solid fa-arrow-right"></span>
-        </a>
-      {% endif %}
-    </div>
-  </div>
 
-  <br>
+    <br>
 
-  <div id="photo">
-    <img src="{{ file }}" alt="{{ title }} photo {{ currentPhotoIndex }}" class="rounded">
-  </div>
+    <div id="photo">
+      <img src="{{ file }}" alt="{{ title }} photo {{ currentPhotoIndex }}" class="rounded">
+    </div>
+  {% else %}
+    <p class="text-center">There are no photos for this movie.</p>
+  {% endif %}
 {% endblock %}
