@@ -81,11 +81,18 @@ class Movie
     #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'movie')]
     private Collection $photos;
 
+    /**
+     * @var Collection<int, Video>
+     */
+    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'movie')]
+    private Collection $videos;
+
     public function __construct()
     {
         $this->movieActors = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->photos = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -310,6 +317,36 @@ class Movie
             // set the owning side to null (unless already changed)
             if ($photo->getMovie() === $this) {
                 $photo->setMovie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Video>
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): static
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos->add($video);
+            $video->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): static
+    {
+        if ($this->videos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getMovie() === $this) {
+                $video->setMovie(null);
             }
         }
 

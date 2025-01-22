@@ -6,9 +6,11 @@ use App\Entity\Movie;
 use App\Entity\MovieActors;
 use App\Entity\Photo;
 use App\Entity\Review;
+use App\Entity\Video;
 use App\Form\MovieFormType;
 use App\Form\PhotoFormType;
 use App\Form\ReviewFormType;
+use App\Form\VideoFormType;
 use App\Repository\MovieActorsRepository;
 use App\Repository\MovieRepository;
 use App\Repository\PhotoRepository;
@@ -226,6 +228,62 @@ class MovieController extends AbstractController
         ]);
     }
 
+    #[Route('/movie/{slug}-{id}/videos', name: 'movie.videos', requirements: ['slug' => '[a-z0-9-]+', 'id' => '\d+'])]
+    public function showVideos(Request $request, string $slug, int $id): Response
+    {
+        $movie = $this->movieRepository->find($id);
+
+        return $this->render('movie/videos.html.twig', [
+            'id' => $id,
+            'slug' => $slug,
+            'section' => 'videos',
+            'title' => $movie->getTitle(),
+            'isUserProprietary' => ($this->getUser() ? $this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) : false)
+        ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/movie/{slug}-{id}/videos/upload', name: 'movie.videos.upload', requirements: ['slug' => '[a-z0-9-]+', 'id' => '\d+'])]
+    public function uploadVideo(Request $request, EntityManagerInterface $entityManager, string $slug, int $id): Response
+    {
+        if ($this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) === false) {
+            return $this->redirectToRoute('movie.videos', [
+                'id' => $id,
+                'slug' => $slug
+            ]);
+        }
+
+        $movie = $this->movieRepository->find($id);
+        $form = $this->createForm(VideoFormType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $request->files->get('video_form')['video'];
+            $url = $this->s3Uploader->upload($file);
+            $video = new Video();
+
+            $video->setTitle($form['title']->getData());
+            $video->setUrl($url);
+            $video->setMovie($movie);
+
+            $entityManager->persist($video);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('movie.videos', [
+                'id' => $id,
+                'slug' => $slug
+            ]);
+        }
+
+        return $this->render('movie/videos-upload.html.twig', [
+            'id' => $id,
+            'slug' => $slug,
+            'section' => 'videos',
+            'title' => $movie->getTitle(),
+            'videoForm' => $form
+        ]);
+    }
 
     #[Route('/movie/add', name: 'movie.add', methods: ['GET', 'POST'])]
     public function add(Request $request, EntityManagerInterface $entityManager): Response

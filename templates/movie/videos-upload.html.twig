@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ title }} - Upload Video - Movie Reviews{% endblock %}
+
+{% block body %}
+  <style>
+    .card-md .mb-3:last-of-type {
+      text-align: right !important;
+    }
+  </style>
+
+  {% include 'movie/partials/header.html.twig' %}
+
+  <p class="text-center">Upload Video</p>
+
+  <hr>
+
+  <div class="card-md">
+    {{ form_start(videoForm) }}
+
+    {{ form_row(videoForm.title) }}
+
+    {{ form_row(videoForm.video) }}
+
+    <div class="row">
+      <div class="col">
+        <a href="{{ path('movie.videos', { slug: slug, id: id }) }}" class="btn btn-link">
+            <span class="fa-regular fa-circle-left"></span>
+            Back to videos
+        </a>
+      </div>
+      <div class="col">
+        {{ form_row(videoForm.upload) }}
+      </div>
+    </div>
+
+    {{ form_end(videoForm) }}
+  </div>
+{% endblock %}
