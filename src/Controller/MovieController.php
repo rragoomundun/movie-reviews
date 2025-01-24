@@ -15,6 +15,7 @@ use App\Repository\MovieActorsRepository;
 use App\Repository\MovieRepository;
 use App\Repository\PhotoRepository;
 use App\Repository\ReviewRepository;
+use App\Repository\VideoRepository;
 use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,18 +32,21 @@ class MovieController extends AbstractController
     private readonly MovieActorsRepository $movieActorsRepository;
     private readonly ReviewRepository $reviewRepository;
     private readonly PhotoRepository $photoRepository;
+    private readonly VideoRepository $videoRepository;
 
     public function __construct(
         MovieRepository $movieRepository,
         MovieActorsRepository $movieActorsRepository,
         ReviewRepository $reviewRepository,
-        S3Uploader $s3Uploader,
-        PhotoRepository $photoRepository
+        PhotoRepository $photoRepository,
+        VideoRepository $videoRepository,
+        S3Uploader $s3Uploader
     ) {
         $this->movieRepository = $movieRepository;
         $this->movieActorsRepository = $movieActorsRepository;
         $this->reviewRepository = $reviewRepository;
         $this->photoRepository = $photoRepository;
+        $this->videoRepository = $videoRepository;
 
         $this->s3Uploader = $s3Uploader;
     }
@@ -215,7 +219,8 @@ class MovieController extends AbstractController
 
             return $this->redirectToRoute('movie.photos', [
                 'id' => $id,
-                'slug' => $slug
+                'slug' => $slug,
+                'file' => $url
             ]);
         }
 
@@ -231,14 +236,57 @@ class MovieController extends AbstractController
     #[Route('/movie/{slug}-{id}/videos', name: 'movie.videos', requirements: ['slug' => '[a-z0-9-]+', 'id' => '\d+'])]
     public function showVideos(Request $request, string $slug, int $id): Response
     {
+        $file = $request->query->get('file');
         $movie = $this->movieRepository->find($id);
+        $videos = $this->videoRepository->findVideosForMovie($movie);
+
+        if ($file !== null && $this->videoRepository->exists($file, $movie) === false) {
+            $file = null;
+        }
+
+        if ($file === null && empty($videos) === false) {
+            return $this->redirectToRoute('movie.videos', [
+                'id' => $id,
+                'slug' => $slug,
+                'file' => $videos[0]->getUrl()
+            ]);
+        }
+
+        $nbVideos = count($videos);
+        $currentVideoIndex = 0;
+        $previousFile = null;
+        $nextFile = null;
+        $videoTitle = null;
+
+        for ($currentVideoIndex = 0; $currentVideoIndex < $nbVideos; $currentVideoIndex++) {
+            if ($videos[$currentVideoIndex]->getUrl() === $file) {
+                $videoTitle = $videos[$currentVideoIndex]->getTitle();
+                break;
+            }
+        }
+
+        if ($currentVideoIndex > 0) {
+            $previousFile = $videos[$currentVideoIndex - 1]->getUrl();
+        }
+
+        if ($currentVideoIndex + 1 < $nbVideos) {
+            $nextFile = $videos[$currentVideoIndex + 1]->getUrl();
+        }
+
+        $currentVideoIndex += 1;
 
         return $this->render('movie/videos.html.twig', [
             'id' => $id,
             'slug' => $slug,
             'section' => 'videos',
             'title' => $movie->getTitle(),
-            'isUserProprietary' => ($this->getUser() ? $this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) : false)
+            'isUserProprietary' => ($this->getUser() ? $this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) : false),
+            'file' => $file,
+            'videoTitle' => $videoTitle,
+            'previousFile' => $previousFile,
+            'nextFile' => $nextFile,
+            'currentVideoIndex' => $currentVideoIndex,
+            'nbVideos' => $nbVideos
         ]);
     }
 
@@ -272,7 +320,8 @@ class MovieController extends AbstractController
 
             return $this->redirectToRoute('movie.videos', [
                 'id' => $id,
-                'slug' => $slug
+                'slug' => $slug,
+                'file' => $url
             ]);
         }
 

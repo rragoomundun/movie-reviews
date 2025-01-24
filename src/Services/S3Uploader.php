@@ -5,6 +5,7 @@ namespace App\Service;
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class S3Uploader
 {
@@ -12,8 +13,14 @@ class S3Uploader
   private $bucket;
   private $imageBucketFolder;
 
-  public function __construct(string $awsKey, string $awsSecret, string $region, string $bucket, string $imageBucketFolder)
-  {
+  public function __construct(
+    string $awsKey,
+    string $awsSecret,
+    string $region,
+    string $bucket,
+    string $imageBucketFolder,
+    private SluggerInterface $slugger
+  ) {
     $this->s3Client = new S3Client([
       'version' => 'latest',
       'region' => $region,
@@ -29,7 +36,9 @@ class S3Uploader
 
   public function upload(UploadedFile $file): string
   {
-    $key = $this->imageBucketFolder . '/' . uniqid() . '-' . $file->getClientOriginalName();
+    $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $safeFileName = strtolower($this->slugger->slug($originalFilename));
+    $key = $safeFileName . '-' . uniqid() . '.' . $file->guessExtension();
 
     try {
       $result = $this->s3Client->putObject([

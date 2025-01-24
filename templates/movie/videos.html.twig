@@ -3,6 +3,16 @@
 {% block title %} {{ title }} - Videos - Movie Reviews{% endblock %}
 
 {% block body %}
+  <style>
+    .row {
+      align-items: center;
+    }
+
+    #video video {
+      width: 100%;
+    }
+  </style>
+
   {% include 'movie/partials/header.html.twig' %}
 
   {% if is_granted('ROLE_USER') and isUserProprietary == true %}
@@ -16,4 +26,36 @@
     <hr>
   {% endif %}
 
+  {% if nbVideos > 0 %}
+    <div class="row">
+      <div class="col">
+        {% if previousFile %}
+          <a href="{{ path('movie.videos', { slug: slug, id: id, file: previousFile }) }}" class="btn btn-primary">
+            <span class="fa-solid fa-arrow-left"></span>
+            <span>Previous</span>
+          </a>
+        {% endif %}
+      </div>
+      <div class="col text-center">
+        <span>{{ currentVideoIndex }} / {{ nbVideos }}</span>
+      </div>
+      <div class="col text-end">
+        {% if nextFile %}
+          <a href="{{ path('movie.videos', { slug: slug, id: id }) }}?file={{ nextFile }}" class="btn btn-primary">
+            <span>Next</span>
+            <span class="fa-solid fa-arrow-right"></span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <br>
+
+    <div id="video">
+      <video src="{{ file }}" class="rounded" controls autoplay muted></video>
+      <h2>{{ videoTitle }}</h2>
+    </div>
+  {% else %}
+    <p class="text-center">There are no videos for this movie.</p>
+  {% endif %}
 {% endblock %}
