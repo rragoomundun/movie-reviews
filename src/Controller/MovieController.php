@@ -257,10 +257,13 @@ class MovieController extends AbstractController
         $previousFile = null;
         $nextFile = null;
         $videoTitle = null;
+        $videoId = null;
+        $isPageVideo = false;
 
         for ($currentVideoIndex = 0; $currentVideoIndex < $nbVideos; $currentVideoIndex++) {
             if ($videos[$currentVideoIndex]->getUrl() === $file) {
                 $videoTitle = $videos[$currentVideoIndex]->getTitle();
+                $videoId = $videos[$currentVideoIndex]->getId();
                 break;
             }
         }
@@ -273,6 +276,10 @@ class MovieController extends AbstractController
             $nextFile = $videos[$currentVideoIndex + 1]->getUrl();
         }
 
+        if ($movie->getPageVideo() !== null && $movie->getPageVideo()->getId() === $videos[$currentVideoIndex]->getId()) {
+            $isPageVideo = true;
+        }
+
         $currentVideoIndex += 1;
 
         return $this->render('movie/videos.html.twig', [
@@ -282,11 +289,13 @@ class MovieController extends AbstractController
             'title' => $movie->getTitle(),
             'isUserProprietary' => ($this->getUser() ? $this->movieRepository->isUserProprietaryOfMovie($id, $this->getUser()) : false),
             'file' => $file,
+            'videoId' => $videoId,
             'videoTitle' => $videoTitle,
             'previousFile' => $previousFile,
             'nextFile' => $nextFile,
             'currentVideoIndex' => $currentVideoIndex,
-            'nbVideos' => $nbVideos
+            'nbVideos' => $nbVideos,
+            'isPageVideo' => $isPageVideo
         ]);
     }
 
@@ -331,6 +340,23 @@ class MovieController extends AbstractController
             'section' => 'videos',
             'title' => $movie->getTitle(),
             'videoForm' => $form
+        ]);
+    }
+
+    #[Route('/movie/{slug}-{id}/videos/set-page-video/{videoId}', name: 'movie.videos.set-page-video', methods: ['PUT'], requirements: ['slug' => '[a-z0-9-]+', 'id' => '\d+', 'videoId' => '\d+'])]
+    public function setPageVideo(EntityManagerInterface $entityManager, string $slug, int $id, int $videoId)
+    {
+        $movie = $this->movieRepository->find($id);
+        $video = $this->videoRepository->find($videoId);
+
+        $movie->setPageVideo($video);
+
+        $entityManager->persist($movie);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('movie.page', [
+            'slug' => $slug,
+            'id' => $id
         ]);
     }
 

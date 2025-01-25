@@ -87,6 +87,9 @@ class Movie
     #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'movie')]
     private Collection $videos;
 
+    #[ORM\ManyToOne]
+    private ?Video $pageVideo = null;
+
     public function __construct()
     {
         $this->movieActors = new ArrayCollection();
@@ -349,6 +352,18 @@ class Movie
                 $video->setMovie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPageVideo(): ?Video
+    {
+        return $this->pageVideo;
+    }
+
+    public function setPageVideo(?Video $pageVideo): static
+    {
+        $this->pageVideo = $pageVideo;
 
         return $this;
     }

@@ -55,6 +55,16 @@
       <video src="{{ file }}" class="rounded" controls autoplay muted></video>
       <h2>{{ videoTitle }}</h2>
     </div>
+
+    {% if isUserProprietary and isPageVideo == false %}
+      <form action="{{ path('movie.videos.set-page-video', { slug: slug, id: id, videoId: videoId }) }}" method="POST" class="text-end">
+        <input type="hidden" name="_method" value="PUT">
+
+        <button type="submit" class="btn btn-link">
+          Set as page video
+        </button>
+      </form>
+    {% endif %}
   {% else %}
     <p class="text-center">There are no videos for this movie.</p>
   {% endif %}
