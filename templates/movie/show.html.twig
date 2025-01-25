@@ -19,6 +19,10 @@
       margin-top: 1rem;
     }
 
+    #movie-videos video {
+      width: 100%;
+    }
+
     #movie-photos #photos div img {
       width: 100%
     }
@@ -58,6 +62,22 @@
       </ul>
     </div>
   </div>
+
+  {% if video %}
+    <h2 class="mt-3">Videos</h2>
+
+    <div id="movie-videos">
+      <video src="{{ video.url }}" class="rounded" controls autoplay muted></video>
+
+      <br>
+
+      <div class="text-end">
+        <a href="{{ path('movie.videos', { slug: slug, id: id }) }}" class="btn btn-link">
+          All Videos
+        </a>
+      </div>
+    </div>
+  {% endif %}
 
   {% if photos %}
     <h2 class="mt-3">Photos</h2>

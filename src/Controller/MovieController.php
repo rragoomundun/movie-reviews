@@ -77,6 +77,7 @@ class MovieController extends AbstractController
             'genre' => $movie->getGenre()->getLabel(),
             'director' => $director->getFirstName() . ' ' . $director->getLastName(),
             'actors' => $actors,
+            'video' => $movie->getPageVideo(),
             'photos' => $photos,
             'reviews' => $reviews
         ]);
