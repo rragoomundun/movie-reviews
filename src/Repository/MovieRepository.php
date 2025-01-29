@@ -6,13 +6,14 @@ use App\Entity\Movie;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 /**
  * @extends ServiceEntityRepository<Movie>
  */
 class MovieRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private SluggerInterface $slugger)
     {
         parent::__construct($registry, Movie::class);
     }
@@ -26,5 +27,20 @@ class MovieRepository extends ServiceEntityRepository
             ->setParameter('proprietary', $user)
             ->getQuery()
             ->getResult();
+    }
+
+    public function find10NewMovies(): array
+    {
+        $movies = $this->createQueryBuilder('m')
+            ->orderBy('m.releaseDate', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        foreach ($movies as $movie) {
+            $movie->slug = strtolower($this->slugger->slug($movie->getTitle()));
+        }
+
+        return $movies;
     }
 }

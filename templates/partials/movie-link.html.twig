@@ -1,0 +1,28 @@
+<style>
+  .movie-link {
+    max-width: 300px;
+  }
+
+  .movie-link img {
+    width: 300px;
+    height: 450px;
+    object-fit: cover;
+  }
+
+  .movie-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+</style>
+
+<div class="movie-link">
+  <a href="{{ path('movie.page', { slug: movie.slug, id: movie.id }) }}">
+    <img src="{{ movie.coverImage }}" alt="{{ movie.title }} cover image" class="rounded">
+  </a>
+
+  <div class="movie-title text-center">
+    <a href="{{ path('movie.page', { slug: movie.slug, id: movie.id }) }}">
+      <span class="fs-5">{{ movie.title }}</span>
+    </a>
+  </div>
+</div>

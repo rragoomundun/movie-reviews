@@ -1,0 +1,58 @@
+  <style>
+    .movies-slideshow {
+      margin-top: -32px;
+    }
+
+    .movies-slideshow .disable-scrollbars {
+      display: flex;
+      overflow-y: auto;
+      column-gap: 1rem;
+      position: relative;
+    }
+
+    .movie-slideshow-arrows {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      top: 230px;
+    }
+
+    .movie-slideshow-arrows .shadow {
+      cursor: pointer;
+      border-radius: 100%;
+      background-color: #ffffff;
+      position: relative;
+      z-index: 1;
+    }
+
+    .movie-slideshow-arrows .fa-circle-left {
+      margin-left: 0.5rem;
+    }
+
+    .movie-slideshow-arrows .fa-circle-right {
+      margin-right: 0.5rem;
+    }
+  </style>
+
+  <div id="{{ id }}" class="movies-slideshow">
+    <div class="movie-slideshow-arrows">
+      <span class="fa-regular fa-circle-left fa-2x shadow"></span>
+      <span class="fa-regular fa-circle-right fa-2x shadow"></span>
+    </div>
+
+    <div class="disable-scrollbars">
+      {% for movie in movies %}
+        {% include 'partials/movie-link.html.twig' %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('#{{ id }} .fa-regular.fa-circle-left').addEventListener('click', () => {
+      document.querySelector('#{{ id }} .disable-scrollbars').scrollBy(-300, 0);
+    });
+
+    document.querySelector('#{{ id }} .fa-regular.fa-circle-right').addEventListener('click', () => {
+      document.querySelector('#{{ id }} .disable-scrollbars').scrollBy(300, 0);
+    });
+  </script>
