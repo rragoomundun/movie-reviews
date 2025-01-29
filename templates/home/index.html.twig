@@ -3,15 +3,7 @@
 {% block title %}Home - Movie Reviews{% endblock %}
 
 {% block body %}
-  <style>
-    #recent-movies {
-      display: flex;
-      overflow-y: auto;
-      column-gap: 1rem;
-    }
-  </style>
-
   <h2>Most Recent Movies</h2>
 
-  {% include 'partials/movies-slideshow.html.twig' with { movies: newestMovies} %}
+  {% include 'partials/movies-slideshow.html.twig' with { movies: newestMovies, id: 'recent-movies' } %}
 {% endblock %}

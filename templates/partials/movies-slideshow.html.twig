@@ -7,6 +7,7 @@
       display: flex;
       overflow-y: auto;
       column-gap: 1rem;
+      position: relative;
     }
 
     .movie-slideshow-arrows {
@@ -20,6 +21,8 @@
       cursor: pointer;
       border-radius: 100%;
       background-color: #ffffff;
+      position: relative;
+      z-index: 1;
     }
 
     .movie-slideshow-arrows .fa-circle-left {
@@ -31,7 +34,7 @@
     }
   </style>
 
-  <div class="movies-slideshow">
+  <div id="{{ id }}" class="movies-slideshow">
     <div class="movie-slideshow-arrows">
       <span class="fa-regular fa-circle-left fa-2x shadow"></span>
       <span class="fa-regular fa-circle-right fa-2x shadow"></span>
@@ -45,18 +48,11 @@
   </div>
 
   <script>
-    const leftScrollButtonEl = document.querySelector('.fa-regular.fa-circle-left');
-    const rightScrollButtonEl = document.querySelector('.fa-regular.fa-circle-right');
-    const scrollableEl = document.querySelector('.disable-scrollbars');
+    document.querySelector('#{{ id }} .fa-regular.fa-circle-left').addEventListener('click', () => {
+      document.querySelector('#{{ id }} .disable-scrollbars').scrollBy(-300, 0);
+    });
 
-    function scrollLeft() {
-      scrollableEl.scrollBy(-300, 0);
-    }
-
-    function scrollRight() {
-      scrollableEl.scrollBy(300, 0);
-    }
-
-    leftScrollButtonEl.addEventListener('click', scrollLeft);
-    rightScrollButtonEl.addEventListener('click', scrollRight);
+    document.querySelector('#{{ id }} .fa-regular.fa-circle-right').addEventListener('click', () => {
+      document.querySelector('#{{ id }} .disable-scrollbars').scrollBy(300, 0);
+    });
   </script>
