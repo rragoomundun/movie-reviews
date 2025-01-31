@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if app.request.query.has('query') %}
+        {{ app.request.query.get('query') }} - 
+    {% endif %}
+
+    Search - Movie Reviews
+{% endblock %}
+
+{% block body %}
+    <style>
+        #search-results {
+            display: flex;
+            gap: 10px;
+            flex-flow: wrap;
+            justify-content: center;
+        }
+    </style>
+
+    <form class="search rounded" action="{{ path('search.index') }}" method="GET">
+        <div class="input-group input-group-lg">
+            <input type="text" class="form-control" name="query" value="{{ app.request.query.get('query') }}" placeholder="Search for movies...">
+            <button class="btn " type="submit">
+                <span class="fa-solid fa-magnifying-glass"></span>
+            </button>
+        </div>
+    </form>
+
+    <br>
+
+    {% if app.request.query.has('query') and movies is empty %}
+        <div class="text-center">
+            <p>Cannot find a movie for this query.</p>
+        </div>
+    {% else %}
+        <div id="search-results">
+            {% for movie in movies %}
+                {% include 'partials/movie-link.html.twig' %}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

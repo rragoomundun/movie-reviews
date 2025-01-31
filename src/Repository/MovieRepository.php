@@ -18,6 +18,13 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
+    private function setMoviesSlug(array $movies): void
+    {
+        foreach ($movies as $movie) {
+            $movie->slug = strtolower($this->slugger->slug($movie->getTitle()));
+        }
+    }
+
     public function isUserProprietaryOfMovie(int $movieId, User $user): bool
     {
         return (bool) $this->createQueryBuilder('m')
@@ -37,9 +44,7 @@ class MovieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        foreach ($movies as $movie) {
-            $movie->slug = strtolower($this->slugger->slug($movie->getTitle()));
-        }
+        $this->setMoviesSlug($movies);
 
         return $movies;
     }
@@ -53,9 +58,20 @@ class MovieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        foreach ($movies as $movie) {
-            $movie->slug = strtolower($this->slugger->slug($movie->getTitle()));
-        }
+        $this->setMoviesSlug($movies);
+
+        return $movies;
+    }
+
+    public function findLike(string $query): array
+    {
+        $movies = $this->createQueryBuilder('m')
+            ->where('LOWER(m.title) LIKE LOWER(:query)')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+
+        $this->setMoviesSlug($movies);
 
         return $movies;
     }
