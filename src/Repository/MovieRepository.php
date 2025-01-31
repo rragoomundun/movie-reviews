@@ -43,4 +43,20 @@ class MovieRepository extends ServiceEntityRepository
 
         return $movies;
     }
+
+    public function find10TopRatedMovies(): array
+    {
+        $movies = $this->createQueryBuilder('m')
+            ->innerJoin('m.reviews', 'r')
+            ->groupBy('m.id')
+            ->orderBy('AVG(r.mark)', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        foreach ($movies as $movie) {
+            $movie->slug = strtolower($this->slugger->slug($movie->getTitle()));
+        }
+
+        return $movies;
+    }
 }

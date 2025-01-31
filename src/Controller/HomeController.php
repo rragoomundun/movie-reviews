@@ -13,9 +13,11 @@ class HomeController extends AbstractController
     public function index(MovieRepository $movieRepository): Response
     {
         $newestMovies = $movieRepository->find10NewMovies();
+        $topRatedMovies = $movieRepository->find10TopRatedMovies();
 
         return $this->render('home/index.html.twig', [
-            'newestMovies' => $newestMovies
+            'newestMovies' => $newestMovies,
+            'topRatedMovies' => $topRatedMovies
         ]);
     }
 }

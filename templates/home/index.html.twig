@@ -6,4 +6,10 @@
   <h2>Most Recent Movies</h2>
 
   {% include 'partials/movies-slideshow.html.twig' with { movies: newestMovies, id: 'recent-movies' } %}
+
+  <br>
+  
+  <h2>Top Rated Movies</h2>
+
+  {% include 'partials/movies-slideshow.html.twig' with { movies: topRatedMovies, id: 'top-rated-movies' } %}
 {% endblock %}
