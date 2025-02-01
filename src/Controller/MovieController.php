@@ -258,12 +258,14 @@ class MovieController extends AbstractController
         $previousFile = null;
         $nextFile = null;
         $videoTitle = null;
+        $videoThumbnail = null;
         $videoId = null;
         $isPageVideo = false;
 
         for ($currentVideoIndex = 0; $currentVideoIndex < $nbVideos; $currentVideoIndex++) {
             if ($videos[$currentVideoIndex]->getUrl() === $file) {
                 $videoTitle = $videos[$currentVideoIndex]->getTitle();
+                $videoThumbnail = $videos[$currentVideoIndex]->getThumbnail();
                 $videoId = $videos[$currentVideoIndex]->getId();
                 break;
             }
@@ -292,6 +294,7 @@ class MovieController extends AbstractController
             'file' => $file,
             'videoId' => $videoId,
             'videoTitle' => $videoTitle,
+            'videoThumbnail' => $videoThumbnail,
             'previousFile' => $previousFile,
             'nextFile' => $nextFile,
             'currentVideoIndex' => $currentVideoIndex,
@@ -318,11 +321,14 @@ class MovieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $request->files->get('video_form')['video'];
+            $thumbnailFile = $request->files->get('video_form')['thumbnail'];
             $url = $this->s3Uploader->upload($file);
+            $thumbnailUrl = $this->s3Uploader->upload($thumbnailFile);
             $video = new Video();
 
             $video->setTitle($form['title']->getData());
             $video->setUrl($url);
+            $video->setThumbnail($thumbnailUrl);
             $video->setMovie($movie);
 
             $entityManager->persist($video);

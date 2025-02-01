@@ -18,6 +18,13 @@ class VideoFormType extends AbstractType
     {
         $builder
             ->add('title')
+            ->add('thumbnail', FileType::class, [
+                'mapped' => false,
+                'constraints' => new NotNull(),
+                'attr' => [
+                    'accept' => 'image/*'
+                ]
+            ])
             ->add('video', FileType::class, [
                 'mapped' => false,
                 'constraints' => new NotNull(),

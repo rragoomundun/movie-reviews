@@ -34,6 +34,9 @@ class Video
     #[ORM\JoinColumn(nullable: false)]
     private ?Movie $movie = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $thumbnail = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -108,6 +111,18 @@ class Video
     public function setMovie(?Movie $movie): static
     {
         $this->movie = $movie;
+
+        return $this;
+    }
+
+    public function getThumbnail(): ?string
+    {
+        return $this->thumbnail;
+    }
+
+    public function setThumbnail(string $thumbnail): static
+    {
+        $this->thumbnail = $thumbnail;
 
         return $this;
     }

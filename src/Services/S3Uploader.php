@@ -38,7 +38,7 @@ class S3Uploader
   {
     $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
     $safeFileName = strtolower($this->slugger->slug($originalFilename));
-    $key = $safeFileName . '-' . uniqid() . '.' . $file->guessExtension();
+    $key = $this->imageBucketFolder . '/' . $safeFileName . '-' . uniqid() . '.' . $file->guessExtension();
 
     try {
       $result = $this->s3Client->putObject([
