@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Settings - Movie Reviews{% endblock %}
+
+{% block body %}
+    <div class="card-md card">
+        <div class="card-body">
+            <h1 class="h3 mb-3">Settings</h1>
+
+            <h2 class="h4">Update E-Mail</h2>
+            <hr>
+
+            {{ form(updateEmailForm) }}
+
+            <h2 class="h4">Update Password</h2>
+            <hr>
+
+            {{ form(updatePasswordForm) }}
+
+            <h2 class="h4">Delete Account</h2>
+            <hr>
+
+            <p>
+                By clicking on the delete button your account and all its associated data will
+                be deleted. It won't be possible to recover so be careful.
+            </p>
+
+            <div class="text-center">
+                <form action="{{ path('settings.delete') }}" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+
+                    <button type="submit" class="btn btn-danger">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

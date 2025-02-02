@@ -66,7 +66,7 @@ class Movie
     /**
      * @var Collection<int, MovieActors>
      */
-    #[ORM\OneToMany(targetEntity: MovieActors::class, mappedBy: 'movie')]
+    #[ORM\OneToMany(targetEntity: MovieActors::class, mappedBy: 'movie', cascade: ['remove'])]
     private Collection $movieActors;
 
     /**
@@ -78,13 +78,13 @@ class Movie
     /**
      * @var Collection<int, Photo>
      */
-    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'movie')]
+    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'movie', cascade: ['remove'])]
     private Collection $photos;
 
     /**
      * @var Collection<int, Video>
      */
-    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'movie')]
+    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'movie', cascade: ['remove'])]
     private Collection $videos;
 
     #[ORM\ManyToOne]

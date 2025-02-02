@@ -64,13 +64,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Movie>
      */
-    #[ORM\OneToMany(targetEntity: Movie::class, mappedBy: 'proprietary')]
+    #[ORM\OneToMany(targetEntity: Movie::class, mappedBy: 'proprietary', cascade: ['remove'])]
     private Collection $movies;
 
     /**
      * @var Collection<int, Review>
      */
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'proprietary')]
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'proprietary', cascade: ['remove'])]
     private Collection $reviews;
 
     public function __construct()
